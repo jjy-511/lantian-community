@@ -1,26 +1,18 @@
 package com.jjynowcoder.community;
 
-import com.jjynowcoder.community.config.AlphaConfig;
-import com.jjynowcoder.community.dao.AlphaDao;
 import com.jjynowcoder.community.dao.DiscussPostMapper;
+import com.jjynowcoder.community.dao.LoginTicketMapper;
 import com.jjynowcoder.community.dao.UserMapper;
 import com.jjynowcoder.community.entity.DiscussPost;
+import com.jjynowcoder.community.entity.LoginTicket;
 import com.jjynowcoder.community.entity.User;
-import com.jjynowcoder.community.service.AlphaService;
-import org.apache.ibatis.annotations.Mapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -34,6 +26,9 @@ public class MapperTest {
 
     @Autowired
     private DiscussPostMapper discussPostMapper;
+
+    @Autowired
+    private LoginTicketMapper loginTicketMapper;
 
      @Test
     public void testSelectUser(){
@@ -80,5 +75,15 @@ System.out.println(user.getId());
 
         int rows = discussPostMapper.selectDiscussPostRows(149);
         System.out.println(rows);
+     }
+
+     @Test
+     public void testInsertLoginTicket(){
+         LoginTicket loginTicket=new LoginTicket();
+         loginTicket.setUserId(233);
+         loginTicket.setTicket("abcd");
+         loginTicket.setStatus(0);
+         loginTicket.setExpired(new Date(System.currentTimeMillis()+1000*60*10));
+         loginTicketMapper.insertLoginTicket(loginTicket);
      }
 }
