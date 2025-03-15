@@ -1,10 +1,13 @@
 package com.jjynowcoder.community.service;
 
+import com.jjynowcoder.community.dao.LoginTicketMapper;
 import com.jjynowcoder.community.dao.UserMapper;
+import com.jjynowcoder.community.entity.LoginTicket;
 import com.jjynowcoder.community.entity.User;
 import com.jjynowcoder.community.util.CommunityUtil;
 import com.jjynowcoder.community.util.MailClient;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,9 @@ import static com.jjynowcoder.community.util.CommunityConstant.*;
 
 @Service
 public class UserService {
+    @Autowired
+    private LoginTicketMapper loginTicketMapper;
+
     @Autowired
     private UserMapper userMapper;
 
@@ -107,5 +113,61 @@ public class UserService {
     }else {
         return ACTIVATION_FAILURE;
     }
+    }
+
+    public Map<String,Object> login(String username,String password,int expiredSeconds){
+        Map<String,Object> map=new HashMap<>();
+        //空值处理
+        if(StringUtils.isBlank(username)){
+            map.put("usernameMsg","账号不能为空");
+            return map;
+        }
+        if(StringUtils.isBlank(password)){
+            map.put("passwordMsg","密码不能为空");
+            return map;
+        }
+
+        //验证账号
+        User user=userMapper.selectByName(username);
+        if(user == null){
+            map.put("usernameMsg","该账号不存在");
+            return map;
+        }
+        if(user.getStatus()==0){
+            map.put("usernameMsg","该账号未激活");
+            return map;
+        }
+        password=CommunityUtil.md5(password+user.getSalt());
+        if(!user.getPassword().equals(password)){
+            map.put("passwordMsg","密码错误");
+            return map;
+        }
+
+        //生成登录凭证
+        LoginTicket loginTicket = new LoginTicket();
+        loginTicket.setUserId(user.getId());
+        loginTicket.setTicket(CommunityUtil.getRandomString());
+        loginTicket.setStatus(0);
+        loginTicket.setExpired(new Date(System.currentTimeMillis()+expiredSeconds* 1000L));
+        loginTicketMapper.insertLoginTicket(loginTicket);
+
+        map.put("ticket",loginTicket.getTicket());
+        return map;
+    }
+
+    public void Logout(String ticket){
+        loginTicketMapper.updateStatus(ticket,1);
+    }
+
+    public LoginTicket findLoginTicket(String ticket) {
+        return loginTicketMapper.selectByTicket(ticket);
+    }
+
+    public int updateHeader(int userId,String headerUrl){
+    return userMapper.updateHeader(userId,headerUrl);
+    }
+
+    public int updatePassword(int userId,String password){
+        return userMapper.updatePassword(userId,password);
     }
 }

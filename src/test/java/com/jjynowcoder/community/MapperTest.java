@@ -86,4 +86,13 @@ System.out.println(user.getId());
          loginTicket.setExpired(new Date(System.currentTimeMillis()+1000*60*10));
          loginTicketMapper.insertLoginTicket(loginTicket);
      }
+
+     @Test
+    public void testSelectLoginTicket(){
+        LoginTicket loginTicket= loginTicketMapper.selectByTicket("abcd");
+         System.out.println(loginTicket);
+         loginTicketMapper.updateStatus("abcd",1);
+         loginTicket= loginTicketMapper.selectByTicket("abcd");
+         System.out.println(loginTicket);
+    }
 }
