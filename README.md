@@ -47,3 +47,13 @@
 #### • 应用拦截器实现，编写LoginTicketInterceptor类
 • 拦截器应用逻辑- 在请求开始时查询登录用户- 在本次请求中持有用户数据- 在模板视图上显示用户数据- 在请求结束时清理用户数据<br>
 • 建立CookieUtil类封装获取Cookie方法，建立HostHolder类基于ThreadLocal实现多线程下的每个线程都能获取独立的User示例
+### 6.实现用户修改头像和密码功能
+#### • 编写setting.html用于作为用户修改账号信息页面及相应Controller实现下述逻辑
+• 上传文件- 请求：必须是POST请求- 表单：enctype=“multipart/form-data”- Spring MVC：通过 MultipartFile 处理上传文件<br>
+• 开发步骤- 访问账号设置页面- 上传头像- 获取头像<br>
+• 用户输入原始密码- 原始密码效验- 用户输入新密码和二次确认新密码- 效验无误后同数据库更改密码- 设置登录状态Cookie失效<br>
+### 7.考虑系统安全性，拦截用户未登录时对相关应用的访问
+• 使用自定义注解，配置拦截器LoginRequiredInterceptor拦截未登录的访问
+## 三、开发社区核心功能
+### 1.使用Tire树实现敏感词过滤器
+ 
