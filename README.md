@@ -51,3 +51,4 @@
 #### • 编写setting.html用于作为用户修改账号信息页面及相应Controller实现下述逻辑
 • 上传文件- 请求：必须是POST请求- 表单：enctype=“multipart/form-data”- Spring MVC：通过 MultipartFile 处理上传文件<br>
 • 开发步骤- 访问账号设置页面- 上传头像- 获取头像<br>
+• 用户输入原始密码- 原始密码效验- 用户输入新密码和二次确认新密码- 效验无误后同数据库更改密码- 设置登录状态Cookie失效<br>
