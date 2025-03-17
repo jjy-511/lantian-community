@@ -52,8 +52,12 @@
 • 上传文件- 请求：必须是POST请求- 表单：enctype=“multipart/form-data”- Spring MVC：通过 MultipartFile 处理上传文件<br>
 • 开发步骤- 访问账号设置页面- 上传头像- 获取头像<br>
 • 用户输入原始密码- 原始密码效验- 用户输入新密码和二次确认新密码- 效验无误后同数据库更改密码- 设置登录状态Cookie失效<br>
-### 7.考虑系统安全性，拦截用户未登录时对相关应用的访问
+### 7.考虑系统安全性，拦截用户未登录时对相关应用板块的访问
 • 使用自定义注解，配置拦截器LoginRequiredInterceptor拦截未登录的访问
 ## 三、开发社区核心功能
 ### 1.使用Tire树实现敏感词过滤器
-• 将敏感词过滤器SensitiveFilter封装到util中，过滤器中内置前缀树数据结构，从文件txt中读入敏感词构建前缀树，使用双指针遍历字符串，单指针遍历前缀树的方法，通过StringBuilder构建字符串的形式，完成对String中的敏感词过滤
+• 将敏感词过滤器封装为SensitiveFilter类存放到util中，过滤器中内置前缀树数据结构，从文件txt中读入敏感词构建前缀树，使用双指针遍历字符串，单指针遍历前缀树的方法，通过StringBuilder构建字符串的形式，完成对String中的敏感词过滤
+### 2.使用AJAX技术开发发表帖子功能
+• fastjson2- 导入jar包- 在CommunityUtil类中封装JSON处理逻辑
+• 完善discuss_post相应的Mapper和Service，编写相应Controller处理帖子插入数据库操作
+• 在index首页中完成前端发布帖子页面，编写index.js实现客户端端和服务器异步通信，实现发布帖子实时置于首页
