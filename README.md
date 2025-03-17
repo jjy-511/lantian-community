@@ -56,4 +56,4 @@
 • 使用自定义注解，配置拦截器LoginRequiredInterceptor拦截未登录的访问
 ## 三、开发社区核心功能
 ### 1.使用Tire树实现敏感词过滤器
- 
+• 将敏感词过滤器SensitiveFilter封装到util中，过滤器中内置前缀树数据结构，从文件txt中读入敏感词构建前缀树，使用双指针遍历字符串，单指针遍历前缀树的方法，通过StringBuilder构建字符串的形式，完成对String中的敏感词过滤
