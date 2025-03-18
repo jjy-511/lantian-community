@@ -58,6 +58,14 @@
 ### 1.使用Tire树实现敏感词过滤器
 • 将敏感词过滤器封装为SensitiveFilter类存放到util中，过滤器中内置前缀树数据结构，从文件txt中读入敏感词构建前缀树，使用双指针遍历字符串，单指针遍历前缀树的方法，通过StringBuilder构建字符串的形式，完成对String中的敏感词过滤
 ### 2.使用AJAX技术开发发表帖子功能
-• fastjson2- 导入jar包- 在CommunityUtil类中封装JSON处理逻辑
-• 完善discuss_post相应的Mapper和Service，编写相应Controller处理帖子插入数据库操作
+• fastjson2- 导入jar包- 在CommunityUtil类中封装JSON处理逻辑<br>
+• 完善discuss_post相应的Mapper和Service，编写相应Controller处理帖子插入数据库操作<br>
 • 在index首页中完成前端发布帖子页面，编写index.js实现客户端端和服务器异步通信，实现发布帖子实时置于首页
+### 3.实现查看帖子详细
+• 编写相应Controller，Service及Mapper实现访问逻辑<br>
+• 编写discussPost-detail.html作为前端展示帖子静态页面
+### 4.实现显示帖子评论
+• 在数据库中创建Comment表，对该表进行定义<br>
+• 数据层mapper- 根据实体查询一页评论数据- 根据实体查询评论的数量<br>
+• 业务层service- 处理查询评论的业务和处理查询评论数量的业务<br>
+• 表现层- 显示帖子详情数据时，同时显示该帖子所有的评论数据
