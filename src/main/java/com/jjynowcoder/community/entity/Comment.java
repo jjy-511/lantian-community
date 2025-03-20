@@ -10,6 +10,7 @@ public class Comment {
     private String content;
     private int status;
     private Date createTime;
+    private int entityId;
 
     public int getId() {
         return id;
@@ -67,6 +68,14 @@ public class Comment {
         this.userId = userId;
     }
 
+    public int getEntityId() {
+        return entityId;
+    }
+
+    public void setEntityId(int entityId) {
+        this.entityId = entityId;
+    }
+
     @Override
     public String toString() {
         return "Comment{" +
@@ -77,6 +86,7 @@ public class Comment {
                 ", content='" + content + '\'' +
                 ", status=" + status +
                 ", createTime=" + createTime +
+                ", entityId=" + entityId +
                 '}';
     }
 }
