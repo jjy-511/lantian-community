@@ -96,3 +96,5 @@
 • @ExceptionHandler - 用于修饰方法，该方法会在Controller出现异常后被调用，用于处理捕获到的异常
 ### 9.实现统一记录日志
 • 应用Spring AOP，创建ServiceLogAspect类，在所有Service被访问前@Before进行日志记录，记录某用户在某时刻访问了某功能
+## 四、引入Redis实现功能与重构功能
+### 1.引入Redis
