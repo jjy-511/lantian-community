@@ -113,3 +113,4 @@
 ### 3.统计用户收到的赞
 • 重构点赞功能- 以用户为key，记录点赞数量-like:user:userId  ->int- increment(key)，decrement(key) <br>
 • 编写个人主页profile.html并配置UserController- 将项目中所有出现的用户头像链接到相对应的用户主页- 以用户为key，查询点赞数量
+### 4.实现关注、取消关注功能
