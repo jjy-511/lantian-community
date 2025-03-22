@@ -96,5 +96,17 @@
 • @ExceptionHandler - 用于修饰方法，该方法会在Controller出现异常后被调用，用于处理捕获到的异常
 ### 9.实现统一记录日志
 • 应用Spring AOP，创建ServiceLogAspect类，在所有Service被访问前@Before进行日志记录，记录某用户在某时刻访问了某功能
-## 四、引入Redis实现功能与重构功能
+## 四、引入Redis高效实现功能与重构功能
 ### 1.引入Redis
+• 引入依赖- spring-boot-starter-data-redis<br>
+• 配置Redis- 配置数据库参数- 编写配置类，构造RedisTemplate
+### 2.实现点赞功能
+#### 功能设计
+• 点赞- 支持对帖子、评论点赞- 第1次点赞，第2次取消点赞<br>
+• 首页点赞数量- 统计帖子的点赞数量<br>
+• 详情页点赞数量- 统计点赞数量- 显示点赞状态
+#### 实现过程
+• 数据层直接使用RedisTemplate，使用set集合对赞进行存储<br>
+• 创建RedisKeyUtil类封装到util中，负责生成Redis的key，规定如下：like:entity:entityType:entityId  ->set(userId)<br>
+• 业务层创建LikeService- 处理进行点赞的业务- 处理查询实体点赞数量的业务- 处理查询某用户对某实体点赞状态的业务<br>
+• 表现层- 在DiscussPostController中添加点赞相关的处理- 编写discuss.js实现异步点赞- 完善discuss-detail.html的页面点赞显示
