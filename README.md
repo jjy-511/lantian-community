@@ -110,3 +110,6 @@
 • 创建RedisKeyUtil类封装到util中，负责生成Redis的key，规定如下：like:entity:entityType:entityId  ->set(userId)<br>
 • 业务层创建LikeService- 处理进行点赞的业务- 处理查询实体点赞数量的业务- 处理查询某用户对某实体点赞状态的业务<br>
 • 表现层- 在DiscussPostController中添加点赞相关的处理- 编写discuss.js实现异步点赞- 完善discuss-detail.html的页面点赞显示
+### 3.统计用户收到的赞
+• 重构点赞功能- 以用户为key，记录点赞数量-like:user:userId  ->int- increment(key)，decrement(key) <br>
+• 编写个人主页profile.html并配置UserController- 将项目中所有出现的用户头像链接到相对应的用户主页- 以用户为key，查询点赞数量
