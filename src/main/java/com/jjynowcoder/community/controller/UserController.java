@@ -1,7 +1,10 @@
 package com.jjynowcoder.community.controller;
 
 import com.jjynowcoder.community.entity.User;
+import com.jjynowcoder.community.service.FollowService;
+import com.jjynowcoder.community.service.LikeService;
 import com.jjynowcoder.community.service.UserService;
+import com.jjynowcoder.community.util.CommunityConstant;
 import com.jjynowcoder.community.util.CommunityUtil;
 import com.jjynowcoder.community.util.HostHolder;
 import jakarta.mail.Multipart;
@@ -40,6 +43,12 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private LikeService likeService;
+
+    @Autowired
+    private FollowService followService;
 
     @Autowired
     private HostHolder hostHolder;
@@ -97,6 +106,31 @@ public class UserController {
             logger.error("读取头像失败"+e.getMessage());
             throw new RuntimeException(e);
         }
+    }
+
+    //个人主页
+    @RequestMapping(path = "/profile/{userId}",method = RequestMethod.GET)
+    public String getProfilePage(@PathVariable("userId")int userId,Model model){
+        User user=userService.findUserById(userId);
+        if(user==null){
+            throw new RuntimeException("该用户不存在");
+        }
+        model.addAttribute("user",user);
+        int likeCount= likeService.findUserLikeCount(userId);
+        model.addAttribute("likeCount",likeCount);
+        //关注数
+        long followeeCnt= followService.findFolloweeCount(userId, CommunityConstant.ENTITY_TYPE_USER);
+        model.addAttribute("followeeCount",followeeCnt);
+        //粉丝数
+        long followerCnt= followService.findFollowerCount(CommunityConstant.ENTITY_TYPE_USER,userId);
+        model.addAttribute("followerCount",followerCnt);
+        //是否已关注
+        boolean hasFollowed=false;
+        if(hostHolder.getUser()!=null){
+            hasFollowed=followService.hasFollowed(hostHolder.getUser().getId(),CommunityConstant.ENTITY_TYPE_USER,userId);
+        }
+        model.addAttribute("hasFollowed",hasFollowed);
+        return "/site/profile";
     }
 
 }
