@@ -70,10 +70,10 @@
 • 业务层service- 处理查询评论的业务和处理查询评论数量的业务<br>
 • 表现层- 显示帖子详情数据时，同时显示该帖子所有的评论数据
 ### 5.实现发布评论功能
-• 数据层- 增加评论数据- 修改帖子的评论数量<br>
-• 业务层- 处理添加评论的业务：先增加评论、再更新帖子的评论数量，同时在此处应用Spring的声明式事务管理，将事务隔离级别设置为READ_COMMITTED<br>
+• 数据层mapper- 增加评论数据- 修改帖子的评论数量<br>
+• 业务层service- 处理添加评论的业务：先增加评论、再更新帖子的评论数量，同时在此处应用Spring的声明式事务管理，将事务隔离级别设置为READ_COMMITTED<br>
 • 表现层- 处理添加评论数据的请求- 设置添加评论的表单
-### 6.实现私信查看功能
+### 6.实现私信查看功能  
 #### 功能设计
 • 私信列表- 查询当前用户的会话列表，每个会话只显示一条最新的私信- 支持分页显示<br>
 • 私信详情- 查询某个会话所包含的私信- 支持分页显示
@@ -82,11 +82,41 @@
 • 数据层mapper- 查询当前用户的会话列表,针对每个会话只返回一条最新的私信- 查询某个会话所包含的私信列表- 查询当前用户的会话数量- 查询某个会话所包含的私信数量- 查询未读私信的数量<br>
 • 业务层service- 处理查询当前用户会话列表的业务- 处理查询某个会话包含的私信列表的业务- 处理查询当前用户会话数量的业务- 处理查询某个会话所包含私信数量的业务- 处理查询未读私信的业务<br>
 • 表现层- 显示消息页面，分为系统通知和用户私信页面letter.html，和展示特定会话页面letter-detail.html（都复用分页功能）
-### 6.实现私信发送功能
+### 7.实现私信发送功能
 #### 功能设计
 • 发送私信- 采用异步的方式发送私信- 发送成功后刷新私信列表
 • 设置已读- 访问私信详情时，将显示的私信设置为已读状态
 #### 实现过程
-• 数据层mapper- 插入一个新增消息- 更新消息状态- 查询当前用户的会话数量- 查询某个会话所包含的私信数量- 查询未读私信的数量<br>
-• 业务层service- 处理查询当前用户会话列表的业务- 处理查询某个会话包含的私信列表的业务- 处理查询当前用户会话数量的业务- 处理查询某个会话所包含私信数量的业务- 处理查询未读私信的业务<br>
-• 表现层- 显示消息页面，分为系统通知和用户私信页面letter.html，和展示特定会话页面letter-detail.html（都复用分页功能）
+• 数据层mapper- 插入一个新增消息- 更新消息状态<br>
+• 业务层service- 处理插入一个新增消息的业务- 处理更新消息状态的业务<br>
+• 表现层- 在MessageController中设置发送消息路径- 编写letter.js实现异步发送私信
+### 8.实现统一异常处理
+• 编写404.html错误页和500.html错误页<br>
+• 利用Spring的统一异常处理机制，创建ExceptionAdvice类用于统一捕获Controller的异常,异常后导向500.html页面<br>
+• @ExceptionHandler - 用于修饰方法，该方法会在Controller出现异常后被调用，用于处理捕获到的异常
+### 9.实现统一记录日志
+• 应用Spring AOP，创建ServiceLogAspect类，在所有Service被访问前@Before进行日志记录，记录某用户在某时刻访问了某功能
+## 四、引入Redis高效实现功能与重构功能
+### 1.引入Redis
+• 引入依赖- spring-boot-starter-data-redis<br>
+• 配置Redis- 配置数据库参数- 编写配置类，构造RedisTemplate
+### 2.实现点赞功能
+#### 功能设计
+• 点赞- 支持对帖子、评论点赞- 第1次点赞，第2次取消点赞<br>
+• 首页点赞数量- 统计帖子的点赞数量<br>
+• 详情页点赞数量- 统计点赞数量- 显示点赞状态
+#### 实现过程
+• 数据层直接使用RedisTemplate，使用set集合对赞进行存储<br>
+• 创建RedisKeyUtil类封装到util中，负责生成Redis的key，规定如下：like:entity:entityType:entityId  ->set(userId)<br>
+• 业务层创建LikeService- 处理进行点赞的业务- 处理查询实体点赞数量的业务- 处理查询某用户对某实体点赞状态的业务<br>
+• 表现层- 在DiscussPostController中添加点赞相关的处理- 编写discuss.js实现异步点赞- 完善discuss-detail.html的页面点赞显示
+### 3.统计用户收到的赞
+• 重构点赞功能- 以用户为key，记录点赞数量-like:user:userId  ->int- increment(key)，decrement(key) <br>
+• 编写个人主页profile.html并配置UserController- 将项目中所有出现的用户头像链接到相对应的用户主页- 以用户为key，查询点赞数量
+### 4.实现关注、取消关注功能
+• 需求- 开发关注、取消关注功能- 统计用户的关注数、粉丝数<br>
+• 关键- 若A关注了B，则A是B的Follower（粉丝），B是A的Followee（目标）- 关注的目标可以是用户、帖子、题目等，在实现时将这些目标抽象为实体<br>
+• 实现- <br>
+使用Redis中的Zset存储，关注者：followee:userId:entityType ->zset(entityId,now)- 粉丝：follower:entityType:entityId ->zset(userId,now)<br>
+创建FollowService，在其中定义follow关注方法向Redis添加数据，定义unfollow取消关注方法移除数据，和三种查询方法- 创建FollowController完成页面映射调用Service<br>
+处理UserController与profile.html使得关注数量，粉丝数量正确显示
