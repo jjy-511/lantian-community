@@ -70,8 +70,8 @@
 • 业务层service- 处理查询评论的业务和处理查询评论数量的业务<br>
 • 表现层- 显示帖子详情数据时，同时显示该帖子所有的评论数据
 ### 5.实现发布评论功能
-• 数据层- 增加评论数据- 修改帖子的评论数量<br>
-• 业务层- 处理添加评论的业务：先增加评论、再更新帖子的评论数量，同时在此处应用Spring的声明式事务管理，将事务隔离级别设置为READ_COMMITTED<br>
+• 数据层mapper- 增加评论数据- 修改帖子的评论数量<br>
+• 业务层service- 处理添加评论的业务：先增加评论、再更新帖子的评论数量，同时在此处应用Spring的声明式事务管理，将事务隔离级别设置为READ_COMMITTED<br>
 • 表现层- 处理添加评论数据的请求- 设置添加评论的表单
 ### 6.实现私信查看功能  
 #### 功能设计
@@ -114,3 +114,9 @@
 • 重构点赞功能- 以用户为key，记录点赞数量-like:user:userId  ->int- increment(key)，decrement(key) <br>
 • 编写个人主页profile.html并配置UserController- 将项目中所有出现的用户头像链接到相对应的用户主页- 以用户为key，查询点赞数量
 ### 4.实现关注、取消关注功能
+• 需求- 开发关注、取消关注功能- 统计用户的关注数、粉丝数<br>
+• 关键- 若A关注了B，则A是B的Follower（粉丝），B是A的Followee（目标）- 关注的目标可以是用户、帖子、题目等，在实现时将这些目标抽象为实体<br>
+• 实现- <br>
+使用Redis中的Zset存储，关注者：followee:userId:entityType ->zset(entityId,now)- 粉丝：follower:entityType:entityId ->zset(userId,now)<br>
+创建FollowService，在其中定义follow关注方法向Redis添加数据，定义unfollow取消关注方法移除数据，和三种查询方法- 创建FollowController完成页面映射调用Service<br>
+处理UserController与profile.html使得关注数量，粉丝数量正确显示
