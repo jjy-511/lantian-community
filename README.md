@@ -120,3 +120,6 @@
 使用Redis中的Zset存储，关注者：followee:userId:entityType ->zset(entityId,now)- 粉丝：follower:entityType:entityId ->zset(userId,now)<br>
 创建FollowService，在其中定义follow关注方法向Redis添加数据，定义unfollow取消关注方法移除数据，和三种查询方法- 创建FollowController完成页面映射调用Service<br>
 处理UserController与profile.html使得关注数量，粉丝数量正确显示
+### 5.实现关注列表与粉丝列表
+• 业务层实现对Redis的两个查询方法- 查询某个用户关注的人，支持分页- 查询某个用户的粉丝，支持分页<br>
+• 表现层处理followee.html、follower.html正确处理页面显示- 处理“查询关注的人”、“查询粉丝”请求- 编写“查询关注的人”、“查询粉丝”模板<br>
