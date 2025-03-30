@@ -144,3 +144,4 @@
 • 数据层mapper- 按类别查找最新通知- 查找通知数量- 查找未读通知数量- 查找通知列表<br>
 • 业务层service- 处理Mapper的四个方法<br>
 • 表现层- 在MessageController中设置两个页面逻辑- 完善letter.html- 创建notice.html- 创建notice-detail.html -建立拦截器MessageInterceptor拦截实现正式显示未读消息数
+## 六、引入Elasticsearch作为分布式搜索引擎实现社区搜索
