@@ -1,6 +1,7 @@
 package com.jjynowcoder.community.dao;
 
 import com.jjynowcoder.community.entity.Comment;
+import com.jjynowcoder.community.service.CommentService;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -12,4 +13,6 @@ public interface CommentMapper {
     int selectCountByEntity(int entityType,int entityId);
 
     int insertComment(Comment comment);
+
+    Comment selectCommentById(int id);
 }
