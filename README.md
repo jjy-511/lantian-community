@@ -149,4 +149,5 @@
 • 安装并配置ElasticSearch，发现Java版本不兼容，选择降低为Java8确保兼容性<br>
 • 引入依赖spring-boot-starter-data-elasticsearch并配置<br>
 • 解决Redis和ES的底层Netty依赖冲突<br>
-### 2.实现帖子查找
+• 各组件间版本兼容存在严重问题，引入暂时失败，待解决。。。
+## 七、使用Spring Security进行权限控制
