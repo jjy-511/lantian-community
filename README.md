@@ -96,7 +96,7 @@
 • @ExceptionHandler - 用于修饰方法，该方法会在Controller出现异常后被调用，用于处理捕获到的异常
 ### 9.实现统一记录日志
 • 应用Spring AOP，创建ServiceLogAspect类，在所有Service被访问前@Before进行日志记录，记录某用户在某时刻访问了某功能
-## 四、引入Redis高效实现功能与重构功能
+## 四、引入Redis作为缓存高效实现功能与重构功能
 ### 1.引入Redis
 • 引入依赖- spring-boot-starter-data-redis<br>
 • 配置Redis- 配置数据库参数- 编写配置类，构造RedisTemplate
@@ -116,7 +116,15 @@
 ### 4.实现关注、取消关注功能
 • 需求- 开发关注、取消关注功能- 统计用户的关注数、粉丝数<br>
 • 关键- 若A关注了B，则A是B的Follower（粉丝），B是A的Followee（目标）- 关注的目标可以是用户、帖子、题目等，在实现时将这些目标抽象为实体<br>
-• 实现- <br>
-使用Redis中的Zset存储，关注者：followee:userId:entityType ->zset(entityId,now)- 粉丝：follower:entityType:entityId ->zset(userId,now)<br>
-创建FollowService，在其中定义follow关注方法向Redis添加数据，定义unfollow取消关注方法移除数据，和三种查询方法- 创建FollowController完成页面映射调用Service<br>
-处理UserController与profile.html使得关注数量，粉丝数量正确显示
+• 实现- 使用Redis中的Zset存储，关注者：followee:userId:entityType ->zset(entityId,now)- 粉丝：follower:entityType:entityId ->zset(userId,now)<br>
+-创建FollowService，在其中定义follow关注方法向Redis添加数据，定义unfollow取消关注方法移除数据，和三种查询方法- 创建FollowController完成页面映射调用Service<br>
+-处理UserController与profile.html使得关注数量，粉丝数量正确显示
+### 5.实现关注列表与粉丝列表
+• 业务层实现对Redis的两个查询方法- 查询某个用户关注的人，支持分页- 查询某个用户的粉丝，支持分页<br>
+• 表现层处理followee.html、follower.html正确处理页面显示- 处理“查询关注的人”、“查询粉丝”请求- 编写“查询关注的人”、“查询粉丝”模板<br>
+### 6.优化登录板块
+• 使用Redis存储验证码,修改Service和Controller- 验证码需要频繁的访问与刷新，对性能要求较高- 验证码不需永久保存，通常在很短的时间后就会失效- 考虑到进行分布式部署时，存在Session共享的问题<br>
+• 使用Redis存储登录凭证,修改Service和Controller- 处理每次请求时，都要查询用户的登录凭证，访问的频率非常高<br>
+• 使用Redis缓存用户信息- 处理每次请求时，都要根据凭证查询用户信息，访问的频率非常高- 查询时先访问缓存，缓存没有再访问数据库将数据记入缓存中，当数据发生修改时，采用“先更新数据库，再删除缓存策略”
+## 五、引入Kafka作为消息队列实现消息通知
+在引入Kafka时遇到可初始化zookeeper但是无法初始化Kafka的server的问题，查找文档资料，花了四天解决不了，放弃引入。
