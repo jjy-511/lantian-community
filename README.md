@@ -127,4 +127,20 @@
 • 使用Redis存储登录凭证,修改Service和Controller- 处理每次请求时，都要查询用户的登录凭证，访问的频率非常高<br>
 • 使用Redis缓存用户信息- 处理每次请求时，都要根据凭证查询用户信息，访问的频率非常高- 查询时先访问缓存，缓存没有再访问数据库将数据记入缓存中，当数据发生修改时，采用“先更新数据库，再删除缓存策略”
 ## 五、引入Kafka作为消息队列实现消息通知
-在引入Kafka时遇到可初始化zookeeper但是无法初始化Kafka的server的问题，查找文档资料，花了四天解决不了，放弃引入。
+### 1.引入Kafka
+• 安装并配置zookeeper，安装scale<br>
+• 启动zookeeper后配置并启动kafka<br>
+• 引入依赖- spring-kafka- 进行配置
+### 2.使用Kafka发送系统通知
+• 触发事件- 评论后，发布通知- 点赞后，发布通知- 关注后，发布通知<br>
+• 处理事件- 封装事件对象Event类- 开发事件的生产者EventProducer- 开发事件的消费者EventConsumer<br>
+• 在相应三种Controller上添加对应事件响应
+### 3.实现显示系统通知
+#### 需求
+• 通知列表- 显示评论、点赞、关注三种类型的通知<br>
+• 通知详情- 分页显示某一类主题所包含的通知<br>
+• 未读消息- 在页面头部显示所有的未读消息数量
+#### 具体实现
+• 数据层mapper- 按类别查找最新通知- 查找通知数量- 查找未读通知数量- 查找通知列表<br>
+• 业务层service- 处理Mapper的四个方法<br>
+• 表现层- 在MessageController中设置两个页面逻辑- 完善letter.html- 创建notice.html- 创建notice-detail.html -建立拦截器MessageInterceptor拦截实现正式显示未读消息数
